@@ -1,0 +1,3 @@
+maxapi
+gigachat
+aiohttp
