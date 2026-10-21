@@ -13,17 +13,17 @@ from gigachat.models import Chat, Messages, MessagesRole
 # ============================================================
 # КЛЮЧИ (ВСТАВЬ СВОИ)
 # ============================================================
-MAX_TOKEN = os.environ.get "f9LHodD0cOIxT02OIicbmpxEDJ0DRztpWEAmcaMBwqkszSiM1AhOKzPZ57Lh1PMEbZ8xFonMHtWHpR4j34kh"
-GIGACHAT_KEY = os.environ.get "MDFhMGEwYjItOGJhNi03NjQzLWI3MmEtZjNmOGQwNmNhNDBjOjZmZjkwMjBjLWE2NzAtNDM5YS05ZDVlLTYxYmY3ZDQyMDIxYw=="
+MAX_TOKEN = os.environ.get ("MAX_TOKEN")
+GIGACHAT_KEY = os.environ.get ("GIGACHAT_KEY")
 
 # ============================================================
 # НАСТРОЙКА
 # ============================================================
-bot = Bot(token='f9LHodD0cOIxT02OIicbmpxEDJ0DRztpWEAmcaMBwqkszSiM1AhOKzPZ57Lh1PMEbZ8xFonMHtWHpR4j34kh')
+bot = Bot(token=MAX_TOKEN)
 dp = Dispatcher()
 
 giga = GigaChat(
-    credentials='MDFhMGEwYjItOGJhNi03NjQzLWI3MmEtZjNmOGQwNmNhNDBjOjZmZjkwMjBjLWE2NzAtNDM5YS05ZDVlLTYxYmY3ZDQyMDIxYw==',
+    credentials=GIGACHAT_KEY,
     scope="GIGACHAT_API_PERS",
     verify_ssl_certs=False,
     model="GigaChat-2-Pro"
