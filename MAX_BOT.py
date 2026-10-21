@@ -1,4 +1,4 @@
-import asyncio
+[21.10.2026 21:25] GRAY: import asyncio
 import os
 import json
 import base64
@@ -11,10 +11,10 @@ from gigachat import GigaChat
 from gigachat.models import Chat, Messages, MessagesRole
 
 # ============================================================
-# КЛЮЧИ (ВСТАВЬ СВОИ)
+# КЛЮЧИ (БЕРУТСЯ ИЗ НАСТРОЕК RENDER)
 # ============================================================
-MAX_TOKEN = os.environ.get ("MAX_TOKEN")
-GIGACHAT_KEY = os.environ.get ("GIGACHAT_KEY")
+MAX_TOKEN = os.environ.get("MAX_TOKEN")
+GIGACHAT_KEY = os.environ.get("GIGACHAT_KEY")
 
 # ============================================================
 # НАСТРОЙКА
@@ -71,8 +71,7 @@ SYSTEM_PROMPT = (
 # ============================================================
 async def download_max_photo(photo_url: str, filename: str) -> bool:
     try:
-        # Добавляем заголовок с токеном, чтобы MAX понял, что мы свои
-         headers = {"Authorization": f"Bearer {MAX_TOKEN}"}
+        headers = {"Authorization": f"Bearer {MAX_TOKEN}"}
         
         async with aiohttp.ClientSession() as session:
             async with session.get(photo_url, headers=headers) as response:
@@ -81,7 +80,7 @@ async def download_max_photo(photo_url: str, filename: str) -> bool:
                         f.write(await response.read())
                     return True
                 else:
-                    print(f"[ERROR] MAX вернул код {response.status} при скачивании фото")
+                    print(f"[ERROR] MAX вернул код {response.status}")
     except Exception as e:
         print(f"[ERROR] Не удалось скачать фото: {e}")
     return False
@@ -100,16 +99,14 @@ async def ask_giga(user_id: int, text: str = None, photo_url: str = None) -> str
     for msg in history:
         role = MessagesRole.USER if msg["role"] == "user" else MessagesRole.ASSISTANT
         messages.append(Messages(role=role, content=msg["content"]))
-
-    temp_file = None
+[21.10.2026 21:25] GRAY: temp_file = None
     try:
         if photo_url:
             temp_file = f"temp_{user_id}.jpg"
             success = await download_max_photo(photo_url, temp_file)
             if success:
-                # Загружаем фото в GigaChat
                 with open(temp_file, "rb") as f:
-                 uploaded_file = await asyncio.to_thread(giga.upload_file, f)
+                    uploaded_file = await asyncio.to_thread(giga.upload_file, f)
                 
                 messages.append(Messages(
                     role=MessagesRole.USER, 
@@ -126,6 +123,8 @@ async def ask_giga(user_id: int, text: str = None, photo_url: str = None) -> str
         response = await asyncio.wait_for(asyncio.to_thread(giga.chat, chat), timeout=60.0)
         
         answer = response.choices[0].message.content
+
+        # Очистка от LaTeX
         answer = answer.replace("\\[", "")
         answer = answer.replace("\\]", "")
         answer = answer.replace("$$", "")
@@ -142,12 +141,9 @@ async def ask_giga(user_id: int, text: str = None, photo_url: str = None) -> str
         answer = answer.replace("\\rm", "")
         answer = answer.replace("{", "")
         answer = answer.replace("}", "")
-        # Убираем решётки из заголовков
         answer = answer.replace("###", "")
         answer = answer.replace("##", "")
         answer = answer.replace("#", "")
-
-# Убираем одиночные слеши, которые остались
         answer = answer.replace("\\", "")
 
         if user_id not in user_histories:
@@ -164,7 +160,6 @@ async def ask_giga(user_id: int, text: str = None, photo_url: str = None) -> str
         print(f"[ERROR] Ошибка GigaChat: {e}")
         return f"Прости, ошибка: {e}"
     finally:
-        # Удаляем временный файл, чтобы не засорять диск
         if temp_file and os.path.exists(temp_file):
             os.remove(temp_file)
 
@@ -184,18 +179,14 @@ async def start_handler(event: MessageCreated):
 async def message_handler(event: MessageCreated):
     user_id = event.message.sender.user_id
     
-    # Достаем текст и фото (если есть)
     text = None
     photo_url = None
     
     if event.message.body:
         text = getattr(event.message.body, 'text', None)
-        # В этой библиотеке вложения обычно лежат тут
         if hasattr(event.message.body, 'attachments') and event.message.body.attachments:
-            # Берем первое вложение (фото)
             photo_url = event.message.body.attachments[0].payload.url if hasattr(event.message.body.attachments[0], 'payload') else None
 
-    # Ждем имя
     if user_id in user_names and user_names[user_id] is None:
         if text:
             name = text.strip()
@@ -209,8 +200,7 @@ async def message_handler(event: MessageCreated):
     if not text and not photo_url:
         await event.message.answer("Я не вижу ни текста, ни картинки. Скинь задание ещё раз.")
         return
-
-    await event.message.answer("Смотрю задание...")
+[21.10.2026 21:25] GRAY: await event.message.answer("Смотрю задание...")
     answer = await ask_giga(user_id, text=text, photo_url=photo_url)
     await event.message.answer(answer)
 
