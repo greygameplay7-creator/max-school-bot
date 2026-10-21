@@ -71,12 +71,17 @@ SYSTEM_PROMPT = (
 # ============================================================
 async def download_max_photo(photo_url: str, filename: str) -> bool:
     try:
+        # Добавляем заголовок с токеном, чтобы MAX понял, что мы свои
+         headers = {"Authorization": f"Bearer {MAX_TOKEN}"}
+        
         async with aiohttp.ClientSession() as session:
-            async with session.get(photo_url) as response:
+            async with session.get(photo_url, headers=headers) as response:
                 if response.status == 200:
                     with open(filename, "wb") as f:
                         f.write(await response.read())
                     return True
+                else:
+                    print(f"[ERROR] MAX вернул код {response.status} при скачивании фото")
     except Exception as e:
         print(f"[ERROR] Не удалось скачать фото: {e}")
     return False
