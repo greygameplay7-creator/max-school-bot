@@ -13,8 +13,8 @@ from gigachat.models import Chat, Messages, MessagesRole
 # ============================================================
 # КЛЮЧИ (ВСТАВЬ СВОИ)
 # ============================================================
-MAX_TOKEN = "f9LHodD0cOIxT02OIicbmpxEDJ0DRztpWEAmcaMBwqkszSiM1AhOKzPZ57Lh1PMEbZ8xFonMHtWHpR4j34kh"
-GIGACHAT_KEY = "MDFhMGEwYjItOGJhNi03NjQzLWI3MmEtZjNmOGQwNmNhNDBjOjZmZjkwMjBjLWE2NzAtNDM5YS05ZDVlLTYxYmY3ZDQyMDIxYw=="
+MAX_TOKEN = os.environ.get "f9LHodD0cOIxT02OIicbmpxEDJ0DRztpWEAmcaMBwqkszSiM1AhOKzPZ57Lh1PMEbZ8xFonMHtWHpR4j34kh"
+GIGACHAT_KEY = os.environ.get "MDFhMGEwYjItOGJhNi03NjQzLWI3MmEtZjNmOGQwNmNhNDBjOjZmZjkwMjBjLWE2NzAtNDM5YS05ZDVlLTYxYmY3ZDQyMDIxYw=="
 
 # ============================================================
 # НАСТРОЙКА
