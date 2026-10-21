@@ -1,4 +1,4 @@
-[21.10.2026 21:25] GRAY: import asyncio
+import asyncio
 import os
 import json
 import base64
@@ -99,7 +99,7 @@ async def ask_giga(user_id: int, text: str = None, photo_url: str = None) -> str
     for msg in history:
         role = MessagesRole.USER if msg["role"] == "user" else MessagesRole.ASSISTANT
         messages.append(Messages(role=role, content=msg["content"]))
-[21.10.2026 21:25] GRAY: temp_file = None
+        temp_file = None
     try:
         if photo_url:
             temp_file = f"temp_{user_id}.jpg"
@@ -200,7 +200,7 @@ async def message_handler(event: MessageCreated):
     if not text and not photo_url:
         await event.message.answer("Я не вижу ни текста, ни картинки. Скинь задание ещё раз.")
         return
-[21.10.2026 21:25] GRAY: await event.message.answer("Смотрю задание...")
+    await event.message.answer("Смотрю задание...")
     answer = await ask_giga(user_id, text=text, photo_url=photo_url)
     await event.message.answer(answer)
 
